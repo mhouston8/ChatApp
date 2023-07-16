@@ -22,16 +22,16 @@ class ConversationsViewModel: ObservableObject {
         guard let uid = AuthenticationViewModel.shared.userSession?.uid else { return }
         
         let query = COLLECTION_MESSAGES.document(uid).collection("recent-messages").order(by: "timestamp", descending: true) //descending = most recent at top
-        query.getDocuments { snapshot, error in
-            guard let documents = snapshot?.documents else { return }
-            self.recentMessages = documents.compactMap({try? $0.data(as: Message.self)})
-        }
-        
-//        query.addSnapshotListener { snapshot, error in
-//            guard let documents = snapshot?.documents else {
-//                print("Error fetching documents: \(error!)")
-//                return
-//            }
+//        query.getDocuments { snapshot, error in
+//            guard let documents = snapshot?.documents else { return }
+//            self.recentMessages = documents.compactMap({try? $0.data(as: Message.self)})
 //        }
+        
+        query.addSnapshotListener { snapshot, error in
+            guard let changes = snapshot?.documentChanges.filter({$0.type == .added}) else { return }
+            var messages = changes.compactMap({try? $0.document.data(as: Message.self)})
+            self.recentMessages = messages
+            print("Changes: \(messages)")
+        }
     }
 }
