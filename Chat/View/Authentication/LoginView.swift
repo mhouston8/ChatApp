@@ -75,8 +75,8 @@ struct LoginView: View {
                     Spacer()
                 }
             }
-            .padding(.leading)
-        }.padding(.top, -56)
+            .padding([.top, .leading])
+        }.padding(.top, 60)
     }
 }
 

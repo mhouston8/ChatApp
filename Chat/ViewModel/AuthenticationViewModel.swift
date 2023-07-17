@@ -54,7 +54,6 @@ class AuthenticationViewModel: NSObject, ObservableObject {
                 print("DEBUG: Saved user to database")
                 self.didAuthenticateUser = true
             }
-            
         }
     }
     

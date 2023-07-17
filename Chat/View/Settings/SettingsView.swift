@@ -11,6 +11,7 @@ struct SettingsView: View {
     //1 way to access the authViewModel
     //@EnvironmentObject var authViewModel: AuthenticationViewModel
     private var user: User
+    @State private var showLogOutAlert = false
     
     init(user: User) {
         self.user = user
@@ -36,8 +37,7 @@ struct SettingsView: View {
                 
                 
                 Button {
-                    //accessing the auth view model's singleton instead of the environment object
-                    AuthenticationViewModel.shared.signOut()
+                    self.showLogOutAlert = true
                 } label: {
                     Text("Log Out")
                         .foregroundColor(.red)
@@ -45,8 +45,15 @@ struct SettingsView: View {
                         .frame(width: UIScreen.main.bounds.width, height: 50)
                         .background(Color.white)
                 }
-
-                
+                .alert(isPresented: $showLogOutAlert) {
+                    return Alert(title: Text("Log Out?"),
+                                message: Text("Are you sure you want to log out?"),
+                                primaryButton: .default(Text("Yes"), action: {
+                                //accessing the auth view model's singleton instead of the environment object
+                                    AuthenticationViewModel.shared.signOut()
+                                }),
+                                secondaryButton: .cancel(Text("No")))
+                }
                 Spacer()
             }
         }
